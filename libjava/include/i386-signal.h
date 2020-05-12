@@ -29,7 +29,7 @@ static void _Jv_##_name (int, siginfo_t *,			\
 #define HANDLE_DIVIDE_OVERFLOW						\
 do									\
 {									\
-  struct ucontext *_uc = (struct ucontext *)_p;				\
+  ucontext_t *_uc = (ucontext_t *)_p;				\
   gregset_t &_gregs = _uc->uc_mcontext.gregs;				\
   unsigned char *_eip = (unsigned char *)_gregs[REG_EIP];		\
 									\
@@ -96,9 +96,9 @@ while (0)
    syscall uses is a different shape from the one in userland and not
    visible to us in a header file so we define it here.  */
 
-extern "C" 
+extern "C"
 {
-  struct kernel_sigaction 
+  struct kernel_sigaction
   {
     void (*k_sa_sigaction)(int,siginfo_t *,void *);
     unsigned long k_sa_flags;
@@ -136,7 +136,7 @@ do								\
     act.k_sa_restorer = restore_rt;				\
     syscall (SYS_rt_sigaction, SIGSEGV, &act, NULL, _NSIG / 8);	\
   }								\
-while (0)  
+while (0)
 
 #define INIT_FPE						\
 do								\
@@ -148,7 +148,7 @@ do								\
     act.k_sa_restorer = restore_rt;				\
     syscall (SYS_rt_sigaction, SIGFPE, &act, NULL, _NSIG / 8);	\
   }								\
-while (0)  
+while (0)
 
 /* You might wonder why we use syscall(SYS_sigaction) in INIT_FPE
  * instead of the standard sigaction().  This is necessary because of
@@ -167,7 +167,7 @@ while (0)
  * anyway.  */
 
 #endif /* JAVA_SIGNAL_H */
-  
+
 #else /* __i386__ */
 
 /* This is for the 64-bit subsystem on i386.  */
